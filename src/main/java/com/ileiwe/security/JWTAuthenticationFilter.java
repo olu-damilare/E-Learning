@@ -28,6 +28,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authManager;
 
+    public JWTAuthenticationFilter(AuthenticationManager authManager) {
+        this.authManager = authManager;
+    }
+
 
     @Override
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
