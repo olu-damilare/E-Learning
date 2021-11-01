@@ -1,4 +1,4 @@
-package com.ileiwe.services.user;
+package com.ileiwe.security;
 
 import com.ileiwe.data.model.LearningParty;
 import com.ileiwe.data.repository.LearningPartyRepository;
