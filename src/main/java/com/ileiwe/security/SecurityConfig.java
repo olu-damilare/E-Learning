@@ -2,6 +2,7 @@ package com.ileiwe.security;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest()
                     .authenticated()
                     .and()
-                    .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                    .addFilter( new JWTAuthenticationFilter(authenticationManager()))
                     .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                     .exceptionHandling()
                     .and()
