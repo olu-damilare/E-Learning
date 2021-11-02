@@ -1,4 +1,4 @@
-package com.ileiwe.data.services;
+package com.ileiwe.services;
 
 
 import com.ileiwe.data.model.Authority;
