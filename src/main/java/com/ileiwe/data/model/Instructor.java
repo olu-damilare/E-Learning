@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -24,6 +25,9 @@ public class Instructor {
     @NotNull
     @Column(nullable = false)
     private String firstName;
+
+    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private String lastName;
     @Enumerated(EnumType.STRING)
@@ -33,6 +37,13 @@ public class Instructor {
     private String bio;
     @OneToOne(cascade = CascadeType.PERSIST)
     private LearningParty learningParty;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Course> courses;
+
+    public void addCourse(Course course){
+        if(this.courses == null){
+            this.courses = new ArrayList<>();
+        }
+        this.courses.add(course);
+    }
 }
