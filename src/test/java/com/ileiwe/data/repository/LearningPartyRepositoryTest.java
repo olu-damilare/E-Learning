@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Slf4j
-@Sql("/db/insert.sql")
+//@Sql("/db/insert.sql")
 @Transactional
 class LearningPartyRepositoryTest {
 
@@ -34,16 +34,17 @@ class LearningPartyRepositoryTest {
 
     @AfterEach
     void tearDown() {
+//        learningPartyRepository.deleteAll();
     }
 
 
     @Test
 //    @Rollback(value = false)
     void testToCreateLearningParty(){
-        LearningParty learningUser = new LearningParty("dami@gmail.com", "Password123", new Authority(ROLE_STUDENT));
+        LearningParty learningUser = new LearningParty("dammy@gmail.com", "Password123", new Authority(ROLE_STUDENT));
         learningPartyRepository.save(learningUser);
         assertThat(learningUser.getId()).isNotNull();
-        assertThat(learningUser.getEmail()).isEqualTo("dami@gmail.com");
+        assertThat(learningUser.getEmail()).isEqualTo("dammy@gmail.com");
         assertThat(learningUser.getAuthorities().get(0).getAuthority()).isEqualTo(ROLE_STUDENT);
         log.info("Learning partners in db --> {}", learningPartyRepository.findAll());
 
@@ -92,8 +93,6 @@ class LearningPartyRepositoryTest {
     }
 
     @Test
-//    @Rollback(value=false)
-//    @Transactional
     void testToSaveLearningPartyWithBlankStringValue(){
 
         LearningParty learningUser1 = new LearningParty (" ",
@@ -104,10 +103,14 @@ class LearningPartyRepositoryTest {
     }
 
     @Test
+    @Rollback(value=false)
     void testToFindLearningPartyByUsernameTest(){
-        LearningParty learningParty = learningPartyRepository.findByEmail("dummy@gmail.com");
+        LearningParty learningUser = new LearningParty("dami@gmail.com", "Password123", new Authority(ROLE_STUDENT));
+        learningPartyRepository.save(learningUser);
+
+        LearningParty learningParty = learningPartyRepository.findByEmail("dami@gmail.com");
         assertThat(learningParty).isNotNull();
-        assertThat(learningParty.getEmail()).isEqualTo("dummy@gmail.com");
+        assertThat(learningParty.getEmail()).isEqualTo("dami@gmail.com");
 
         log.info("Learning party object --> {}", learningParty);
     }
