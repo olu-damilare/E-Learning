@@ -1,9 +1,6 @@
 package com.ileiwe.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -35,7 +32,8 @@ public class Course{
     @ElementCollection
     private List<String> imageUrls;
     private String language;
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Instructor instructor;
     @ManyToMany
     private List<Student> students;
