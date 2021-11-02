@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-@RequestMapping("/api")
-public class RegistrationController {
+@RequestMapping("/api/instructor")
+public class InstructorController {
 
     @Autowired
     InstructorService instructorService;
 
-    @PostMapping("/instructor")
+    @PostMapping("/register")
     public ResponseEntity<?> registerAsInstructor(@RequestBody InstructorPartyDto instructorPartyDto){
         return ResponseEntity.ok().body(instructorService.saveInstructor(instructorPartyDto));
     }
