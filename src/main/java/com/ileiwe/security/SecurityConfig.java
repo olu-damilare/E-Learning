@@ -1,8 +1,8 @@
 package com.ileiwe.security;
 
 
+import com.ileiwe.services.learningParty.LearningPartyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http.csrf()
                     .disable()
                     .authorizeRequests()
-                    .antMatchers(HttpMethod.POST,"/api/instructor")
+                    .antMatchers(HttpMethod.POST,"/api/instructor/register")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
