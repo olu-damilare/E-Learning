@@ -4,8 +4,8 @@ package com.ileiwe.services.instructor;
 import com.ileiwe.data.model.*;
 import com.ileiwe.data.model.dto.CourseDto;
 import com.ileiwe.data.model.dto.InstructorPartyDto;
-import com.ileiwe.data.repository.CourseRepository;
 import com.ileiwe.data.repository.InstructorRepository;
+import com.ileiwe.services.course.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class InstructorServiceImpl implements InstructorService{
     ModelMapper modelMapper;
 
     @Autowired
-    CourseRepository courseRepository;
+    CourseService courseService;
 
     @Override
     public Instructor saveInstructor(InstructorPartyDto instructorPartyDto) {
@@ -62,24 +62,17 @@ public class InstructorServiceImpl implements InstructorService{
         log.info("found instructor --> {}", instructor);
         Course course = new Course();
         modelMapper.map(courseDto, course);
-        log.info("course Dto before saving --> {}", courseDto);
+        log.info("course before saving --> {}", courseDto);
 
         course.setInstructor(instructor);
         instructor.addCourse(course);
 
-        courseRepository.save(course);
-//        instructor.getCourses().add(course);
+        courseService.saveCourse(courseDto);
 
-
-
-        log.info("course before saving --> {}", course);
-
-
-//        instructorRepository.save(instructor);
+        log.info("course after saving --> {}", course);
 
 
         log.info("instructor after saving course --> {}", instructor);
-        log.info("course after saving --> {}", instructor.getCourses());
 
         return course;
     }
