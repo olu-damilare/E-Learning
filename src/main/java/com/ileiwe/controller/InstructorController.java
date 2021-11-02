@@ -19,6 +19,10 @@ public class InstructorController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerAsInstructor(@RequestBody InstructorPartyDto instructorPartyDto){
-        return ResponseEntity.ok().body(instructorService.saveInstructor(instructorPartyDto));
+        try {
+            return ResponseEntity.ok().body(instructorService.saveInstructor(instructorPartyDto));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
