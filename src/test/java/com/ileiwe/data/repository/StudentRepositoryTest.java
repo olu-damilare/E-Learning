@@ -19,16 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Slf4j
-@Sql(scripts = {"/db/insert.sql"})
+//@Sql(scripts = {"/db/insert.sql"})
 public class StudentRepositoryTest {
 
     @Autowired
     StudentRepository studentRepository;
 
-//    @AfterEach
-//    void tearDown(){
-//        studentRepository.deleteAll();
-//    }
 
     @Test
     void testToSaveStudentAsLearningParty(){
