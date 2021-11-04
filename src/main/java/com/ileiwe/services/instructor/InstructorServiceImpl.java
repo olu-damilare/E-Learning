@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 import static com.ileiwe.data.model.Role.ROLE_INSTRUCTOR;
 
 @Service
@@ -89,6 +91,28 @@ public class InstructorServiceImpl implements InstructorService{
 
         return instructorRepository.findByLearningParty_Email(username);
 
+    }
+
+    @Override
+    public void deleteCourse(String instructorUsername, Long courseId) {
+        Instructor instructor = instructorRepository.findByLearningParty_Email(
+                                instructorUsername);
+        if(instructor == null){
+            throw  new IllegalArgumentException("Invalid instructor id");
+
+        }
+
+        Course course = courseService.findById(courseId);
+
+        instructor.removeCourse(course.getId());
+        courseService.deleteCourse(course.getId());
+
+        instructorRepository.save(instructor);
+    }
+
+    @Override
+    public List<Course> getCourses(String title) {
+        return courseService.getCoursesByTitle(title);
     }
 
 
