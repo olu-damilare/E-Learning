@@ -10,7 +10,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -70,6 +72,9 @@ public class CourseServicesImpl implements CourseService{
         }
 
         modelMapper.map(courseUpdateDto, course);
+        if(courseUpdateDto.isPublished()){
+            course.setDatePublished(LocalDate.now());
+        }
         log.info("fetched course --> {}", course);
 
         List<Course> courses =  course.getInstructor().getCourses();
@@ -79,8 +84,22 @@ public class CourseServicesImpl implements CourseService{
                 break;
             }
         }
-
-
         return courseRepository.save(course);
+    }
+
+    @Override
+    public void deleteCourse(Long courseId) {
+        courseRepository.deleteById(courseId);
+    }
+
+    @Override
+    public List<Course> getCoursesByTitle(String title) {
+        return courseRepository.findAll().stream()
+                .filter(course -> {
+                    String savedCourseTitle = course.getTitle().toLowerCase();
+                    String searchTitle = title.toLowerCase();
+                    return savedCourseTitle.contains(searchTitle);
+                })
+                .collect(Collectors.toList());
     }
 }
