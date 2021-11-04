@@ -22,7 +22,7 @@ public class Course{
     private String title;
     @CreationTimestamp
     private LocalDate dateCreated;
-    private LocalDate dataPublished;
+    private LocalDate datePublished;
     @UpdateTimestamp
     private LocalDate updatedAt;
     private boolean isPublished;
