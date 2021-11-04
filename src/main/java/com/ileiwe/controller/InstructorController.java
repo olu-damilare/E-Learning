@@ -25,48 +25,12 @@ public class InstructorController {
         }
     }
 
-    @GetMapping("/course")
-    public ResponseEntity<?> getCourses(@RequestParam("title") String title){
-        try {
-            System.out.println(title);
-            ;
-            return ResponseEntity.ok().body(instructorService.getCourses(title));
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
-    @PostMapping("/course")
-    public ResponseEntity<?> createCourse(@RequestBody CourseDto courseDto, @RequestBody MultipartFile courseImage){
-        try {
-            return ResponseEntity.ok().body(instructorService.createCourse(courseDto, courseImage));
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
-    @PatchMapping("/course/{id}")
-    public ResponseEntity<?> updateCourse(@RequestBody CourseDto courseDto,
-                                          @PathVariable Long id,
-                                          @RequestBody MultipartFile courseImage){
-        try {
-            return ResponseEntity.ok().body(instructorService.updateCourse(courseDto, id, courseImage));
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
-    @DeleteMapping("/course/{courseId}")
-    public ResponseEntity<?> deleteCourse(@RequestBody CourseDto courseDto,
-                                          @PathVariable("courseId") Long courseId
-                                          ){
-        try {
-            instructorService.deleteCourse(courseDto.getInstructorUsername(),courseId);
-            return ResponseEntity.ok().build();
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
+
+
 
 
 
