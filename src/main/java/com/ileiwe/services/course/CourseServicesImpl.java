@@ -98,8 +98,15 @@ public class CourseServicesImpl implements CourseService{
                 .filter(course -> {
                     String savedCourseTitle = course.getTitle().toLowerCase();
                     String searchTitle = title.toLowerCase();
-                    return savedCourseTitle.contains(searchTitle);
+                    return course.isPublished() && savedCourseTitle.contains(searchTitle);
                 })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Course> findAll() {
+        return courseRepository.findAll().stream()
+                .filter(Course::isPublished)
                 .collect(Collectors.toList());
     }
 }
