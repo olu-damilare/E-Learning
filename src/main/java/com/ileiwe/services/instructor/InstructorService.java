@@ -12,4 +12,7 @@ public interface InstructorService {
     Instructor saveInstructor(InstructorPartyDto instructor);
     Course createCourse(CourseDto courseDto, MultipartFile courseImage);
 
+    Course updateCourse(CourseDto courseUpdateDto, Long courseId, MultipartFile courseImage);
+
+    Instructor findByUsername(String username);
 }
