@@ -44,4 +44,8 @@ public class Instructor {
         }
         this.courses.add(course);
     }
+
+    public void removeCourse(Long courseId) {
+        courses.removeIf(course -> course.getId().equals(courseId) );
+    }
 }
