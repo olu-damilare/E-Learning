@@ -13,4 +13,5 @@ public class CourseDto {
     private String duration;
     private String language;
     private String instructorUsername;
+    private boolean isPublished;
 }
