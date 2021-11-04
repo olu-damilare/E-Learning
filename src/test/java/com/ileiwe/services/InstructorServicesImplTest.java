@@ -227,18 +227,11 @@ public class InstructorServicesImplTest {
         assertThat(courses.size()).isEqualTo(2);
 
         for(Course course1: courses){
-            assertThat(course.getTitle()).contains("How to ");
+            assertThat(course1.getTitle()).contains("How to ");
         }
 
 
-//        log.info("saved course is --> {}", savedCourse);
-
-//        assertThat(savedCourse.getId()).isNotNull();
         assertThat(savedInstructor.getCourses().size()).isGreaterThan(0);
-
-//        instructorService.deleteCourse(instructor.getLearningParty().getEmail(), savedCourse.getId());
-
-//        assertThat(savedCourse).isNull();
 
 
     }
