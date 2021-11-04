@@ -1,9 +1,7 @@
 package com.ileiwe.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"instructor"})
 public class Course{
 
     @Id
@@ -25,7 +24,7 @@ public class Course{
     private String title;
     @CreationTimestamp
     private LocalDate dateCreated;
-    private LocalDate dataPublished;
+    private LocalDate datePublished;
     @UpdateTimestamp
     private LocalDate updatedAt;
     private boolean isPublished;
@@ -35,7 +34,8 @@ public class Course{
     @ElementCollection
     private List<String> imageUrls;
     private String language;
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Instructor instructor;
     @ManyToMany
     private List<Student> students;

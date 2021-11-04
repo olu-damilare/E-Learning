@@ -1,4 +1,4 @@
-package com.ileiwe.security;
+package com.ileiwe.configurations;
 
 
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class PasswordConfig {
-
 
     @Bean
     public PasswordEncoder passwordEncoder(){
