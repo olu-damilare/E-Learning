@@ -18,4 +18,5 @@ public interface CourseService {
     List<Course> getCoursesByTitle(String title);
 
     List<Course> findAll();
+
 }
