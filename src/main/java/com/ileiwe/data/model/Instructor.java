@@ -1,9 +1,6 @@
 package com.ileiwe.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -38,6 +35,7 @@ public class Instructor {
     @OneToOne(cascade = CascadeType.PERSIST)
     private LearningParty learningParty;
     @OneToMany(cascade = CascadeType.PERSIST)
+    @ToString.Exclude
     private List<Course> courses;
 
     public void addCourse(Course course){
