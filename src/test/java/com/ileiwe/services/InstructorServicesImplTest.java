@@ -9,10 +9,13 @@ import com.ileiwe.data.model.dto.CourseDto;
 import com.ileiwe.data.repository.InstructorRepository;
 import com.ileiwe.services.instructor.InstructorService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.ileiwe.data.model.Role.ROLE_INSTRUCTOR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,12 +31,15 @@ public class InstructorServicesImplTest {
     @Autowired
     InstructorService instructorService;
 
-    @Test
-    void testThatInstructorCanCreateCourse(){
+    LearningParty user;
+    Instructor instructor;
 
-        LearningParty user = new LearningParty("trainer@ileiwe.com", "Password123", new Authority(ROLE_INSTRUCTOR));
 
-        Instructor instructor =
+    @BeforeEach
+    void setUp(){
+        user = new LearningParty("trainer@ileiwe.com", "Password123", new Authority(ROLE_INSTRUCTOR));
+
+       instructor =
                 Instructor.builder()
                         .firstName("John")
                         .lastName("Doe")
@@ -45,6 +51,13 @@ public class InstructorServicesImplTest {
         assertThat(instructor.getLearningParty().getId()).isNotNull();
 
         log.info("Instructor after saving to db --> {}", instructor);
+
+
+    }
+
+    @Test
+    void testThatInstructorCanCreateCourse(){
+
 
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
@@ -75,20 +88,6 @@ public class InstructorServicesImplTest {
 
     @Test
     void testToUpdateCourse(){
-        LearningParty user = new LearningParty("trainer@ileiwe.com", "Password123", new Authority(ROLE_INSTRUCTOR));
-
-        Instructor instructor =
-                Instructor.builder()
-                        .firstName("John")
-                        .lastName("Doe")
-                        .learningParty(user)
-                        .build();
-
-        instructorRepository.save(instructor);
-        assertThat(instructor.getId()).isNotNull();
-        assertThat(instructor.getLearningParty().getId()).isNotNull();
-
-        log.info("Instructor after saving to db --> {}", instructor);
 
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
@@ -125,4 +124,131 @@ public class InstructorServicesImplTest {
 
 
     }
+
+    @Test
+    void testToPublishCourse(){
+
+        Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
+        assertThat(savedInstructor).isNotNull();
+
+        CourseDto course = CourseDto.builder()
+                .title("How to program in Java")
+                .instructorUsername(savedInstructor.getLearningParty().getEmail())
+                .description("lorem ipsum")
+                .language("English")
+                .duration("28 hours of recorded video")
+                .build();
+
+
+        Course savedCourse = instructorService.createCourse(course, null);
+
+        log.info("saved course is --> {}", savedCourse);
+
+        assertThat(savedCourse.getId()).isNotNull();
+
+        assertThat(savedCourse.isPublished()).isEqualTo(false);
+
+        CourseDto courseUpdateDto = CourseDto.builder()
+                .isPublished(true)
+                .build();
+
+        log.info("Instructor before publishing course --> {}", instructor);
+
+        Course updatedCourse = instructorService.updateCourse(courseUpdateDto, savedCourse.getId(), null);
+//        savedInstructor = instructorRepository.findById(instructor.getId()).get();
+
+        log.info("Instructor after publishing course --> {}", instructor);
+        assertThat(savedInstructor.getCourses().get(0).isPublished()).isEqualTo(true);
+        assertThat(updatedCourse.isPublished()).isEqualTo(true);
+
+
+    }
+
+    @Test
+    void testToRemoveCourse(){
+
+        Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
+        assertThat(savedInstructor).isNotNull();
+
+        CourseDto course = CourseDto.builder()
+                .title("How to program in Java")
+                .instructorUsername(savedInstructor.getLearningParty().getEmail())
+                .description("lorem ipsum")
+                .language("English")
+                .duration("28 hours of recorded video")
+                .build();
+
+
+        Course savedCourse = instructorService.createCourse(course, null);
+
+        log.info("saved course is --> {}", savedCourse);
+
+        assertThat(savedCourse.getId()).isNotNull();
+        assertThat(savedInstructor.getCourses().size()).isGreaterThan(0);
+
+        instructorService.deleteCourse(instructor.getLearningParty().getEmail(), savedCourse.getId());
+
+//        assertThat(savedCourse).isNull();
+        assertThat(savedInstructor.getCourses().size()).isEqualTo(0);
+
+
+    }
+
+
+    @Test
+    void testToGetCoursesByTitle(){
+
+        Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
+        assertThat(savedInstructor).isNotNull();
+
+        CourseDto course = CourseDto.builder()
+                .title("How to program in Java")
+                .instructorUsername(savedInstructor.getLearningParty().getEmail())
+                .description("lorem ipsum")
+                .language("English")
+                .duration("28 hours of recorded video")
+                .build();
+
+        CourseDto secondCourse = CourseDto.builder()
+                .title("How to program in Python")
+                .instructorUsername(savedInstructor.getLearningParty().getEmail())
+                .description("lorem ipsum")
+                .language("English")
+                .duration("4 days of recorded video")
+                .build();
+
+
+        assertThat(savedInstructor.getCourses()).isNull();
+
+        instructorService.createCourse(course, null);
+        instructorService.createCourse(secondCourse, null);
+
+        List<Course> courses = instructorService.getCourses("How to ");
+        assertThat(courses.size()).isEqualTo(2);
+
+        for(Course course1: courses){
+            assertThat(course.getTitle()).contains("How to ");
+        }
+
+
+//        log.info("saved course is --> {}", savedCourse);
+
+//        assertThat(savedCourse.getId()).isNotNull();
+        assertThat(savedInstructor.getCourses().size()).isGreaterThan(0);
+
+//        instructorService.deleteCourse(instructor.getLearningParty().getEmail(), savedCourse.getId());
+
+//        assertThat(savedCourse).isNull();
+
+
+    }
+
+
+
+
+
+
+
+
+
 }
