@@ -57,23 +57,39 @@ public class InstructorServiceImpl implements InstructorService{
             throw new IllegalArgumentException("Course cannot be null");
         }
 
-        Instructor instructor = instructorRepository.findByLearningParty_Email(courseDto.getInstructorUsername());
+//        Instructor instructor = instructorRepository.findByLearningParty_Email(courseDto.getInstructorUsername());
+//
+////        log.info("found instructor --> {}", instructor);
+//        Course course = new Course();
+//        modelMapper.map(courseDto, course);
+//        log.info("course before saving --> {}", courseDto);
+//
+//        course.setInstructor(instructor);
+//        instructor.addCourse(course);
+//
+//       course = courseService.saveCourse(courseDto);
+//
+//        log.info("course after saving --> {}", course);
+//
+//
+//        log.info("instructor after saving course --> {}", instructor);
 
-        log.info("found instructor --> {}", instructor);
-        Course course = new Course();
-        modelMapper.map(courseDto, course);
-        log.info("course before saving --> {}", courseDto);
-
-        course.setInstructor(instructor);
-        instructor.addCourse(course);
-
-        courseService.saveCourse(courseDto);
-
-        log.info("course after saving --> {}", course);
-
-
-        log.info("instructor after saving course --> {}", instructor);
-
-        return course;
+        return courseService.saveCourse(courseDto);
     }
+
+    @Override
+    public Course updateCourse(CourseDto courseUpdateDto, Long courseId, MultipartFile courseImage) {
+       return courseService.updateCourse(courseUpdateDto, courseId);
+    }
+
+    public Instructor findByUsername(String username){
+        if(username == null){
+            throw new IllegalArgumentException("username cannot be null");
+        }
+
+        return instructorRepository.findByLearningParty_Email(username);
+
+    }
+
+
 }
