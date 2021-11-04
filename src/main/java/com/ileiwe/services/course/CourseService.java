@@ -6,4 +6,7 @@ import com.ileiwe.data.model.dto.CourseDto;
 public interface CourseService {
 
     Course saveCourse(CourseDto courseDto);
+
+    Course findById(Long id);
+    Course updateCourse(CourseDto courseUpdateDto, Long courseId);
 }
