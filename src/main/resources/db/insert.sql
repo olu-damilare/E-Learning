@@ -7,11 +7,11 @@
 -- truncate table student;
 
 --
--- insert into student (id, first_name, last_name,gender)
--- values(110,'Damilare', 'Jolayemi', 'MALE'),
---       (111,'John', 'Doe', 'MALE'),
---       (112,'Jane', 'Doe', 'FEMALE'),
---       (113,'Felicia', 'Parker', 'FEMALE');
+insert into student (id, first_name, last_name,gender)
+values(110,'Damilare', 'Jolayemi', 'MALE'),
+      (111,'John', 'Doe', 'MALE'),
+      (112,'Jane', 'Doe', 'FEMALE'),
+      (113,'Felicia', 'Parker', 'FEMALE');
 --
 --
 -- insert into instructor (id, first_name, last_name, specialization, bio)
@@ -24,9 +24,9 @@
 -- values(118,'dummy@gmail.com', 'password123', true),
 --       (119,'dummy1@gmail.com', 'password123', false);
 
--- insert into course (id, title, is_published,duration, description, language)
--- values(120,'DSA', true, '3 months', 'lorem ipsum', 'French'),
---       (121,'Introduction to programming', false, '3 weeks', 'lorem ipsum', 'English');
+insert into course (id, title, is_published,duration, description, language)
+values(120,'DSA', true, '3 months', 'lorem ipsum', 'French'),
+      (121,'Introduction to programming', false, '3 weeks', 'lorem ipsum', 'English');
 --
 
 -- SET FOREIGN_KEY_CHECKS = 1;
