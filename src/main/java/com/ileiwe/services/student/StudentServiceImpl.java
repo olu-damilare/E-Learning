@@ -72,6 +72,18 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
+    public void unEnroll(Long studentId, Long courseId) {
+        Student student = findStudentById(studentId);
+
+        Course course = courseService.findById(courseId);
+
+        student.getCourses().removeIf(course1 -> course1.getId().equals(courseId));
+        course.getStudents().removeIf(student1 -> student1.getId().equals(studentId));
+
+        studentRepository.save(student);
+    }
+
+    @Override
     public Student findStudentByUsername(String username) {
         return studentRepository.findByLearningParty_Email(username);
     }
