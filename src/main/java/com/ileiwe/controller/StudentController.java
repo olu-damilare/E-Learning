@@ -25,7 +25,7 @@ public class StudentController {
         }
     }
 
-    @PostMapping("/{username}/enroll")
+    @PutMapping("/{username}/enroll")
     public ResponseEntity<?> enrollForCourse(@PathVariable("username") String username, @RequestParam Long courseId){
         try {
             Student student = studentService.findStudentByUsername(username);
@@ -35,6 +35,21 @@ public class StudentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PutMapping("/{username}/unenroll")
+    public ResponseEntity<?> unEnrollForCourse(@PathVariable("username") String username, @RequestParam Long courseId){
+        try {
+            Student student = studentService.findStudentByUsername(username);
+            studentService.unEnroll(student.getId(), courseId);
+            return ResponseEntity.noContent().build();
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+
+
 
 
 }
