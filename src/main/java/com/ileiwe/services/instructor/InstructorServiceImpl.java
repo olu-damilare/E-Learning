@@ -60,23 +60,6 @@ public class InstructorServiceImpl implements InstructorService{
             throw new IllegalArgumentException("Course cannot be null");
         }
 
-//        Instructor instructor = instructorRepository.findByLearningParty_Email(courseDto.getInstructorUsername());
-//
-////        log.info("found instructor --> {}", instructor);
-//        Course course = new Course();
-//        modelMapper.map(courseDto, course);
-//        log.info("course before saving --> {}", courseDto);
-//
-//        course.setInstructor(instructor);
-//        instructor.addCourse(course);
-//
-//       course = courseService.saveCourse(courseDto);
-//
-//        log.info("course after saving --> {}", course);
-//
-//
-//        log.info("instructor after saving course --> {}", instructor);
-
         return courseService.saveCourse(courseDto);
     }
 
