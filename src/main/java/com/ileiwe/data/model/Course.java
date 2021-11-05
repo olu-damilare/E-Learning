@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties({"instructor"})
+@JsonIgnoreProperties({"instructor", "students"})
 public class Course{
 
     @Id
@@ -38,5 +39,13 @@ public class Course{
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Instructor instructor;
     @ManyToMany
+    @ToString.Exclude
     private List<Student> students;
+
+    public void addStudent(Student student) {
+        if(students == null){
+            students = new ArrayList<>();
+        }
+        students.add(student);
+    }
 }
