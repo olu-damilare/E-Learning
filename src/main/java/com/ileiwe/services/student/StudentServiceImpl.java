@@ -1,11 +1,9 @@
 package com.ileiwe.services.student;
 
-import com.ileiwe.data.model.Authority;
-import com.ileiwe.data.model.Instructor;
-import com.ileiwe.data.model.LearningParty;
-import com.ileiwe.data.model.Student;
+import com.ileiwe.data.model.*;
 import com.ileiwe.data.model.dto.StudentPartyDto;
 import com.ileiwe.data.repository.StudentRepository;
+import com.ileiwe.services.course.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +20,9 @@ public class StudentServiceImpl implements StudentService{
 
     @Autowired
     StudentRepository studentRepository;
+
+    @Autowired
+    CourseService courseService;
 
 
     @Override
@@ -51,5 +52,27 @@ public class StudentServiceImpl implements StudentService{
 
         return studentRepository.save(student);
 
+    }
+
+    @Override
+    public Student findStudentById(Long studentId) {
+        return studentRepository.findById(studentId).orElseThrow(() -> new IllegalArgumentException("Invalid student id"));
+    }
+
+    @Override
+    public void enroll(Long studentId, Long courseId) {
+        Student student = findStudentById(studentId);
+
+        Course course = courseService.findById(courseId);
+
+        student.addCourse(course);
+        course.addStudent(student);
+
+        studentRepository.save(student);
+    }
+
+    @Override
+    public Student findStudentByUsername(String username) {
+        return studentRepository.findByLearningParty_Email(username);
     }
 }
