@@ -1,6 +1,7 @@
 package com.ileiwe.controller;
 
 
+import com.ileiwe.data.model.Student;
 import com.ileiwe.data.model.dto.CourseDto;
 import com.ileiwe.data.model.dto.StudentPartyDto;
 import com.ileiwe.services.course.CourseService;
@@ -66,9 +67,18 @@ public class CourseController {
     @GetMapping("/search")
     public ResponseEntity<?> getCourses(@RequestParam String title){
         try {
-            System.out.println(title);
 
             return ResponseEntity.ok().body(instructorService.getCourses(title));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> unEnrollForCourse(@PathVariable("id") Long courseId){
+        try {
+
+            return ResponseEntity.ok(courseService.getCourseById(courseId));
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
