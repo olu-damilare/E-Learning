@@ -43,6 +43,10 @@ public class Student {
         if(courses == null){
             courses = new ArrayList<>();
         }
+        for(Course course1: courses){
+            if(course1.getId().equals(course.getId()))
+                return;
+        }
         courses.add(course);
     }
 }
