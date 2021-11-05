@@ -15,4 +15,6 @@ public interface StudentService {
     Student findStudentByUsername(String username);
 
     void enroll(Long studentId, Long courseId);
+
+    void unEnroll(Long studentId, Long courseId);
 }
