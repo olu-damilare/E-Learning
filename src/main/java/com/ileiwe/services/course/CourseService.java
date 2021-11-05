@@ -1,6 +1,7 @@
 package com.ileiwe.services.course;
 
 import com.ileiwe.data.model.Course;
+import com.ileiwe.data.model.dto.CourseDetailsDto;
 import com.ileiwe.data.model.dto.CourseDto;
 import org.springframework.http.ResponseEntity;
 
@@ -18,4 +19,6 @@ public interface CourseService {
     List<Course> getCoursesByTitle(String title);
 
     List<Course> findAll();
+
+    CourseDetailsDto getCourseById(Long courseId);
 }

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,4 +38,15 @@ public class Student {
     private LearningParty learningParty;
     @ManyToMany
     private List<Course> courses;
+
+    public void addCourse(Course course) {
+        if(courses == null){
+            courses = new ArrayList<>();
+        }
+        for(Course course1: courses){
+            if(course1.getId().equals(course.getId()))
+                return;
+        }
+        courses.add(course);
+    }
 }

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ileiwe.data.model.Role.ROLE_INSTRUCTOR;
 
@@ -59,23 +60,6 @@ public class InstructorServiceImpl implements InstructorService{
             throw new IllegalArgumentException("Course cannot be null");
         }
 
-//        Instructor instructor = instructorRepository.findByLearningParty_Email(courseDto.getInstructorUsername());
-//
-////        log.info("found instructor --> {}", instructor);
-//        Course course = new Course();
-//        modelMapper.map(courseDto, course);
-//        log.info("course before saving --> {}", courseDto);
-//
-//        course.setInstructor(instructor);
-//        instructor.addCourse(course);
-//
-//       course = courseService.saveCourse(courseDto);
-//
-//        log.info("course after saving --> {}", course);
-//
-//
-//        log.info("instructor after saving course --> {}", instructor);
-
         return courseService.saveCourse(courseDto);
     }
 
@@ -113,6 +97,14 @@ public class InstructorServiceImpl implements InstructorService{
     @Override
     public List<Course> getCourses(String title) {
         return courseService.getCoursesByTitle(title);
+    }
+
+    @Override
+    public List<Course> getInstructorCourses(String instructorUsername) {
+        return instructorRepository.findByLearningParty_Email(instructorUsername)
+                .getCourses().stream()
+                .filter(Course::isPublished)
+                .collect(Collectors.toList());
     }
 
 

@@ -2,6 +2,7 @@ package com.ileiwe.services.course;
 
 import com.ileiwe.data.model.Course;
 import com.ileiwe.data.model.Instructor;
+import com.ileiwe.data.model.dto.CourseDetailsDto;
 import com.ileiwe.data.model.dto.CourseDto;
 import com.ileiwe.data.repository.CourseRepository;
 import com.ileiwe.services.instructor.InstructorService;
@@ -53,12 +54,12 @@ public class CourseServicesImpl implements CourseService{
         log.info("instructor after saving course --> {}", instructor);
 
 
-        return courseRepository.save(course);
+        return course;
     }
 
     @Override
     public Course findById(Long id) {
-        return courseRepository.findById(id).orElse(null);
+        return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid course id"));
     }
 
     @Override
@@ -109,4 +110,19 @@ public class CourseServicesImpl implements CourseService{
                 .filter(Course::isPublished)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public CourseDetailsDto getCourseById(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(()-> new IllegalArgumentException("Invalid course id"));
+        if(!course.isPublished()){
+            throw new IllegalStateException("The course with this id has not been published");
+        }
+        CourseDetailsDto courseDetailsDto = new CourseDetailsDto();
+        modelMapper.map(course, courseDetailsDto);
+        courseDetailsDto.setInstructorUsername(course.getInstructor().getLearningParty().getEmail());
+
+        return courseDetailsDto;
+    }
+
+
 }
