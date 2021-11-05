@@ -53,12 +53,12 @@ public class CourseServicesImpl implements CourseService{
         log.info("instructor after saving course --> {}", instructor);
 
 
-        return courseRepository.save(course);
+        return course;
     }
 
     @Override
     public Course findById(Long id) {
-        return courseRepository.findById(id).orElse(null);
+        return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid course id"));
     }
 
     @Override
