@@ -1,15 +1,16 @@
 package com.ileiwe.controller;
 
 
-import com.ileiwe.data.model.Student;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ileiwe.data.model.dto.CourseDto;
-import com.ileiwe.data.model.dto.StudentPartyDto;
 import com.ileiwe.services.course.CourseService;
 import com.ileiwe.services.instructor.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 
 @RestController
@@ -55,10 +56,11 @@ public class CourseController {
         }
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> createCourse(@RequestBody CourseDto courseDto, @RequestBody MultipartFile courseImage){
+    @PostMapping(path ="", consumes = {MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createCourse(@RequestParam("jsonRequest") String jsonRequest, @RequestParam("file") MultipartFile file){
         try {
-            return ResponseEntity.ok().body(instructorService.createCourse(courseDto, courseImage));
+            CourseDto courseDto  = new ObjectMapper().readValue(jsonRequest, CourseDto.class);
+            return ResponseEntity.ok().body(instructorService.createCourse(courseDto, file));
         }catch(Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
