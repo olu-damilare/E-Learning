@@ -47,6 +47,15 @@ public class StudentController {
         }
     }
 
+    @GetMapping("/{username}/courses")
+    public ResponseEntity<?> findAll(@PathVariable("username") String username){
+        try{
+            return ResponseEntity.ok().body(studentService.findAllCoursesForStudent(username));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 
 
