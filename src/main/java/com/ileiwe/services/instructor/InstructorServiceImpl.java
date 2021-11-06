@@ -6,6 +6,7 @@ import com.ileiwe.data.model.dto.CourseDto;
 import com.ileiwe.data.model.dto.InstructorPartyDto;
 import com.ileiwe.data.repository.InstructorRepository;
 import com.ileiwe.services.course.CourseService;
+import com.ileiwe.services.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class InstructorServiceImpl implements InstructorService{
     @Autowired
     CourseService courseService;
 
+    @Autowired
+    EmailService emailService;
+
     @Override
     public Instructor saveInstructor(InstructorPartyDto instructorPartyDto) {
         if(instructorPartyDto == null){
@@ -48,7 +52,15 @@ public class InstructorServiceImpl implements InstructorService{
                                         .learningParty(learningParty)
                                         .build();
 
+        Mail mail = new Mail();
+        mail.setRecipient(instructorPartyDto.getEmail());
+        String mailBody = "Dear " + instructorPartyDto.getFirstName() +
+                ",\n\n" + "Welcome to Slim-Daddy's E-Learning institute. Click the link below to activate your account.\n " +
+                "http://localhost:8081/api/instructor/"+instructorPartyDto.getEmail();
 
+        mail.setMailBody(mailBody);
+
+        emailService.sendMail(mail);
 
        return instructorRepository.save(instructor);
 
@@ -106,6 +118,19 @@ public class InstructorServiceImpl implements InstructorService{
                 .getCourses().stream()
                 .filter(Course::isPublished)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Instructor enableInstructor(String instructorUsername) {
+       Instructor instructor = instructorRepository.findByLearningParty_Email(instructorUsername);
+
+       if(instructor == null){
+           throw new IllegalArgumentException("Invalid username");
+       }
+
+       instructor.getLearningParty().setEnabled(true);
+
+       return instructorRepository.save(instructor);
     }
 
 
