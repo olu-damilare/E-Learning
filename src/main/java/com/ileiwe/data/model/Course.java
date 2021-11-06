@@ -53,4 +53,14 @@ public class Course{
         }
         students.add(student);
     }
+
+    public void addImageUrl(String imageUrl){
+        if(imageUrls == null){
+            imageUrls = new ArrayList<>();
+        }
+        if(imageUrls.contains(imageUrl)){
+            return;
+        }
+        imageUrls.add(imageUrl);
+    }
 }
