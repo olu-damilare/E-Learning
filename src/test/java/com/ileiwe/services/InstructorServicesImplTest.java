@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.ileiwe.data.model.Role.ROLE_INSTRUCTOR;
@@ -71,7 +72,12 @@ public class InstructorServicesImplTest {
                 .build();
 
 
-       Course savedCourse = instructorService.createCourse(course, null);
+        Course savedCourse = null;
+        try {
+            savedCourse = instructorService.createCourse(course, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         log.info("saved course is --> {}", savedCourse);
 
@@ -101,7 +107,12 @@ public class InstructorServicesImplTest {
                 .build();
 
 
-        Course savedCourse = instructorService.createCourse(course, null);
+        Course savedCourse = null;
+        try {
+            savedCourse = instructorService.createCourse(course, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         log.info("saved course is --> {}", savedCourse);
 
@@ -140,7 +151,12 @@ public class InstructorServicesImplTest {
                 .build();
 
 
-        Course savedCourse = instructorService.createCourse(course, null);
+        Course savedCourse = null;
+        try {
+            savedCourse = instructorService.createCourse(course, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         log.info("saved course is --> {}", savedCourse);
 
@@ -179,7 +195,12 @@ public class InstructorServicesImplTest {
                 .build();
 
 
-        Course savedCourse = instructorService.createCourse(course, null);
+        Course savedCourse = null;
+        try {
+            savedCourse = instructorService.createCourse(course, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         log.info("saved course is --> {}", savedCourse);
 
@@ -220,8 +241,12 @@ public class InstructorServicesImplTest {
 
         assertThat(savedInstructor.getCourses()).isNull();
 
-        instructorService.createCourse(course, null);
-        instructorService.createCourse(secondCourse, null);
+        try {
+            instructorService.createCourse(course, null);
+            instructorService.createCourse(secondCourse, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         List<Course> courses = instructorService.getCourses("How to ");
         assertThat(courses.size()).isEqualTo(2);
