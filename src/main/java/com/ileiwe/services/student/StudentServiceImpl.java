@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.ileiwe.data.model.Role.ROLE_STUDENT;
 
@@ -81,6 +82,15 @@ public class StudentServiceImpl implements StudentService{
         course.getStudents().removeIf(student1 -> student1.getId().equals(studentId));
 
         studentRepository.save(student);
+    }
+
+    @Override
+    public List<Course> findAllCoursesForStudent(String username) {
+        Student student = studentRepository.findByLearningParty_Email(username);
+        if(student == null){
+            throw new IllegalArgumentException("Invalid student username");
+        }
+        return student.getCourses();
     }
 
     @Override

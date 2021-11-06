@@ -1,5 +1,8 @@
 package com.ileiwe.services.course;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import com.ileiwe.data.model.Course;
 import com.ileiwe.data.model.Instructor;
 import com.ileiwe.data.model.dto.CourseDetailsDto;
@@ -10,9 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -29,8 +35,11 @@ public class CourseServicesImpl implements CourseService{
     @Autowired
     InstructorService instructorService;
 
+    @Autowired
+    Cloudinary cloudinary;
+
     @Override
-    public Course saveCourse(CourseDto courseDto) {
+    public Course saveCourse(CourseDto courseDto, MultipartFile courseImage) throws IOException {
 
         if(courseDto == null){
             throw new IllegalArgumentException("Course cannot be null");
@@ -41,20 +50,37 @@ public class CourseServicesImpl implements CourseService{
 
         Course course = new Course();
         modelMapper.map(courseDto, course);
+        Map<?, ? > uploadResponse = uploadImage(courseImage);
+        log.info("Upload response --> {}", uploadResponse);
+
+        String imageUrl = (String) uploadResponse.get("url");
+        course.addImageUrl(imageUrl);
+
         log.info("course before saving --> {}", courseDto);
 
         course.setInstructor(instructor);
         instructor.addCourse(course);
 
         course = courseRepository.save(course);
-
         log.info("course after saving --> {}", course);
-
-
         log.info("instructor after saving course --> {}", instructor);
 
 
         return course;
+    }
+
+    public Map<?, ?> uploadImage(MultipartFile file) throws IOException {
+
+        Map<?, ?> imageProperties = ObjectUtils.asMap("transformation", new Transformation()
+                .background("black")
+                .gravity("face")
+                .height(700)
+                .width(700)
+                .crop("fill")
+                .chain()
+                .opacity(50).chain());
+
+        return cloudinary.uploader().upload(file.getBytes(), imageProperties);
     }
 
     @Override

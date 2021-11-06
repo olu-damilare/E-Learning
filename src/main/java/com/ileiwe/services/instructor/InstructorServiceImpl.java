@@ -6,6 +6,7 @@ import com.ileiwe.data.model.dto.CourseDto;
 import com.ileiwe.data.model.dto.InstructorPartyDto;
 import com.ileiwe.data.repository.InstructorRepository;
 import com.ileiwe.services.course.CourseService;
+import com.ileiwe.services.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,9 @@ public class InstructorServiceImpl implements InstructorService{
     @Autowired
     CourseService courseService;
 
+    @Autowired
+    EmailService emailService;
+
     @Override
     public Instructor saveInstructor(InstructorPartyDto instructorPartyDto) {
         if(instructorPartyDto == null){
@@ -47,7 +52,15 @@ public class InstructorServiceImpl implements InstructorService{
                                         .learningParty(learningParty)
                                         .build();
 
+        Mail mail = new Mail();
+        mail.setRecipient(instructorPartyDto.getEmail());
+        String mailBody = "Dear " + instructorPartyDto.getFirstName() +
+                ",\n\n" + "Welcome to Slim-Daddy's E-Learning institute. Click the link below to activate your account.\n " +
+                "http://localhost:8081/api/instructor/"+instructorPartyDto.getEmail();
 
+        mail.setMailBody(mailBody);
+
+        emailService.sendMail(mail);
 
        return instructorRepository.save(instructor);
 
@@ -55,12 +68,12 @@ public class InstructorServiceImpl implements InstructorService{
 
     @Override
     @Transactional
-    public Course createCourse(CourseDto courseDto, MultipartFile courseImage) {
+    public Course createCourse(CourseDto courseDto, MultipartFile courseImage) throws IOException {
         if(courseDto == null){
             throw new IllegalArgumentException("Course cannot be null");
         }
 
-        return courseService.saveCourse(courseDto);
+        return courseService.saveCourse(courseDto, courseImage);
     }
 
     @Override
@@ -105,6 +118,19 @@ public class InstructorServiceImpl implements InstructorService{
                 .getCourses().stream()
                 .filter(Course::isPublished)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Instructor enableInstructor(String instructorUsername) {
+       Instructor instructor = instructorRepository.findByLearningParty_Email(instructorUsername);
+
+       if(instructor == null){
+           throw new IllegalArgumentException("Invalid username");
+       }
+
+       instructor.getLearningParty().setEnabled(true);
+
+       return instructorRepository.save(instructor);
     }
 
 
