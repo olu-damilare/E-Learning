@@ -3,13 +3,14 @@ package com.ileiwe.services.course;
 import com.ileiwe.data.model.Course;
 import com.ileiwe.data.model.dto.CourseDetailsDto;
 import com.ileiwe.data.model.dto.CourseDto;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface CourseService {
 
-    Course saveCourse(CourseDto courseDto);
+    Course saveCourse(CourseDto courseDto, MultipartFile courseImage) throws IOException;
 
     Course findById(Long id);
     Course updateCourse(CourseDto courseUpdateDto, Long courseId);
