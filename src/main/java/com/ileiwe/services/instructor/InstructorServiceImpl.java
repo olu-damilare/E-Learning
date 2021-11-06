@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,12 +56,12 @@ public class InstructorServiceImpl implements InstructorService{
 
     @Override
     @Transactional
-    public Course createCourse(CourseDto courseDto, MultipartFile courseImage) {
+    public Course createCourse(CourseDto courseDto, MultipartFile courseImage) throws IOException {
         if(courseDto == null){
             throw new IllegalArgumentException("Course cannot be null");
         }
 
-        return courseService.saveCourse(courseDto);
+        return courseService.saveCourse(courseDto, courseImage);
     }
 
     @Override
