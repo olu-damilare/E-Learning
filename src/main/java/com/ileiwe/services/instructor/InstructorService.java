@@ -24,4 +24,6 @@ public interface InstructorService {
     List<Course> getCourses(String title);
 
     List<Course> getInstructorCourses(String instructorUsername);
+
+    Instructor enableInstructor(String instructorUsername);
 }
