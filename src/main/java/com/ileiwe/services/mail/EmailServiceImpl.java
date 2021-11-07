@@ -72,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
         mail.setRecipient(instructorPartyDto.getEmail());
         String mailBody = "Dear " + instructorPartyDto.getFirstName() +
                 ",\n\n" + "Welcome to Slim-Daddy's E-Learning institute. Click the link below to activate your account.\n " +
-                "http://localhost:8081/api/instructor/"+ instructorPartyDto.getEmail();
+                "https://slim-learning.herokuapp.com/api/instructor/"+ instructorPartyDto.getEmail();
 
         mail.setMailBody(mailBody);
 
