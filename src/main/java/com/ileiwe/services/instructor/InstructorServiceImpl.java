@@ -52,19 +52,13 @@ public class InstructorServiceImpl implements InstructorService{
                                         .learningParty(learningParty)
                                         .build();
 
-        Mail mail = new Mail();
-        mail.setRecipient(instructorPartyDto.getEmail());
-        String mailBody = "Dear " + instructorPartyDto.getFirstName() +
-                ",\n\n" + "Welcome to Slim-Daddy's E-Learning institute. Click the link below to activate your account.\n " +
-                "http://localhost:8081/api/instructor/"+instructorPartyDto.getEmail();
+       emailService.sendMail(instructorPartyDto);
 
-        mail.setMailBody(mailBody);
-
-        emailService.sendMail(mail);
-
-       return instructorRepository.save(instructor);
+        return instructorRepository.save(instructor);
 
     }
+
+
 
     @Override
     @Transactional
@@ -85,19 +79,26 @@ public class InstructorServiceImpl implements InstructorService{
         if(username == null){
             throw new IllegalArgumentException("username cannot be null");
         }
+        Instructor instructor = getInstructor(username);
 
-        return instructorRepository.findByLearningParty_Email(username);
+        return instructor;
 
     }
 
-    @Override
-    public void deleteCourse(String instructorUsername, Long courseId) {
-        Instructor instructor = instructorRepository.findByLearningParty_Email(
-                                instructorUsername);
+    private Instructor getInstructor(String username) {
+        Instructor instructor = instructorRepository.findByLearningParty_Email(username);
         if(instructor == null){
             throw  new IllegalArgumentException("Invalid instructor id");
 
         }
+        if(!instructor.getLearningParty().isEnabled()){
+            throw new IllegalStateException("This account is not activated.");
+        } return instructor;
+    }
+
+    @Override
+    public void deleteCourse(String instructorUsername, Long courseId) {
+        Instructor instructor = getInstructor(instructorUsername);
 
         Course course = courseService.findById(courseId);
 
@@ -114,8 +115,9 @@ public class InstructorServiceImpl implements InstructorService{
 
     @Override
     public List<Course> getInstructorCourses(String instructorUsername) {
-        return instructorRepository.findByLearningParty_Email(instructorUsername)
-                .getCourses().stream()
+        Instructor instructor = getInstructor(instructorUsername);
+
+        return instructor.getCourses().stream()
                 .filter(Course::isPublished)
                 .collect(Collectors.toList());
     }

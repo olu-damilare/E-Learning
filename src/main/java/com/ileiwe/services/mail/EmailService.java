@@ -1,15 +1,17 @@
 package com.ileiwe.services.mail;
 
 import com.ileiwe.data.model.Mail;
+import com.ileiwe.data.model.dto.InstructorPartyDto;
+import com.ileiwe.data.model.dto.StudentPartyDto;
 
 import javax.mail.MessagingException;
 
 public interface EmailService {
 
 
-        void sendMail(Mail mail);
+        public void sendMail(StudentPartyDto studentPartyDto);
+        public void sendMail(InstructorPartyDto instructorPartyDto);
 
-        void sendMailWithAttachments(Mail mail) throws MessagingException;
 
 
 }

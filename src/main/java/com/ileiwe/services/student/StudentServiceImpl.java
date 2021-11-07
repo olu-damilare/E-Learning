@@ -4,6 +4,7 @@ import com.ileiwe.data.model.*;
 import com.ileiwe.data.model.dto.StudentPartyDto;
 import com.ileiwe.data.repository.StudentRepository;
 import com.ileiwe.services.course.CourseService;
+import com.ileiwe.services.mail.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,9 @@ public class StudentServiceImpl implements StudentService{
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    EmailService emailService;
 
 
     @Override
@@ -51,6 +55,8 @@ public class StudentServiceImpl implements StudentService{
                 .learningParty(learningParty)
                 .build();
 
+        emailService.sendMail(studentPartyDto);
+
         return studentRepository.save(student);
 
     }
@@ -63,6 +69,9 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public void enroll(Long studentId, Long courseId) {
         Student student = findStudentById(studentId);
+        if(!student.getLearningParty().isEnabled()){
+            throw new IllegalArgumentException("This user account has not been activated.");
+        }
 
         Course course = courseService.findById(courseId);
 
@@ -75,6 +84,9 @@ public class StudentServiceImpl implements StudentService{
     @Override
     public void unEnroll(Long studentId, Long courseId) {
         Student student = findStudentById(studentId);
+        if(!student.getLearningParty().isEnabled()){
+            throw new IllegalArgumentException("This user account has not been activated.");
+        }
 
         Course course = courseService.findById(courseId);
 
@@ -90,7 +102,23 @@ public class StudentServiceImpl implements StudentService{
         if(student == null){
             throw new IllegalArgumentException("Invalid student username");
         }
+        if(!student.getLearningParty().isEnabled()){
+            throw new IllegalArgumentException("This user account has not been activated.");
+        }
         return student.getCourses();
+    }
+
+    @Override
+    public Student enableStudent(String username) {
+        Student student = studentRepository.findByLearningParty_Email(username);
+
+        if(student == null){
+            throw new IllegalArgumentException("Invalid username");
+        }
+
+        student.getLearningParty().setEnabled(true);
+
+        return studentRepository.save(student);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.ileiwe.services.mail;
 
 import com.ileiwe.data.model.Mail;
+import com.ileiwe.data.model.dto.InstructorPartyDto;
+import com.ileiwe.data.model.dto.StudentPartyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
@@ -35,7 +37,6 @@ public class EmailServiceImpl implements EmailService {
 //        this.javaMailSender = javaMailSender;
 //    }
 
-    @Override
     public void sendMail(Mail mail) {
 
         SimpleMailMessage msg = new SimpleMailMessage();
@@ -50,7 +51,6 @@ public class EmailServiceImpl implements EmailService {
         emailSender.send(msg);
     }
 
-    @Override
     public void sendMailWithAttachments(Mail mail) throws MessagingException {
         MimeMessage msg = emailSender.createMimeMessage();
 
@@ -65,5 +65,29 @@ public class EmailServiceImpl implements EmailService {
         helper.addAttachment("hero.jpg", new ClassPathResource("hero.jpg"));
 
         emailSender.send(msg);
+    }
+
+    public void sendMail(InstructorPartyDto instructorPartyDto) {
+        Mail mail = new Mail();
+        mail.setRecipient(instructorPartyDto.getEmail());
+        String mailBody = "Dear " + instructorPartyDto.getFirstName() +
+                ",\n\n" + "Welcome to Slim-Daddy's E-Learning institute. Click the link below to activate your account.\n " +
+                "http://localhost:8081/api/instructor/"+ instructorPartyDto.getEmail();
+
+        mail.setMailBody(mailBody);
+
+        sendMail(mail);
+    }
+
+    public void sendMail(StudentPartyDto studentPartyDto) {
+        Mail mail = new Mail();
+        mail.setRecipient(studentPartyDto.getEmail());
+        String mailBody = "Dear " + studentPartyDto.getFirstName() +
+                ",\n\n" + "Welcome to Slim-Daddy's E-Learning institute. Click the link below to activate your account.\n " +
+                "http://localhost:8081/api/student/"+ studentPartyDto.getEmail();
+
+        mail.setMailBody(mailBody);
+
+        sendMail(mail);
     }
 }
