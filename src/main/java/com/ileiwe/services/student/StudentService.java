@@ -22,4 +22,6 @@ public interface StudentService {
     void unEnroll(Long studentId, Long courseId);
 
     List<Course> findAllCoursesForStudent(String username);
+
+    Student enableStudent(String username);
 }
