@@ -25,6 +25,15 @@ public class StudentController {
         }
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<?> enableStudent(@PathVariable("username") String username){
+        try {
+            return ResponseEntity.ok().body(studentService.enableStudent(username));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{username}/enroll")
     public ResponseEntity<?> enrollForCourse(@PathVariable("username") String username, @RequestParam Long courseId){
         try {
