@@ -100,6 +100,7 @@ public class CourseServicesImpl implements CourseService{
 
         modelMapper.map(courseUpdateDto, course);
         if(courseUpdateDto.isPublished()){
+            course.setPublished(true);
             course.setDatePublished(LocalDate.now());
         }
         log.info("fetched course --> {}", course);
