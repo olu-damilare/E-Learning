@@ -6,8 +6,9 @@ import com.cloudinary.utils.ObjectUtils;
 import com.ileiwe.data.model.Course;
 import com.ileiwe.data.model.Instructor;
 import com.ileiwe.data.model.dto.CourseDetailsDto;
-import com.ileiwe.data.model.dto.CourseDto;
+import com.ileiwe.data.model.dto.CourseCreateDto;
 import com.ileiwe.data.repository.CourseRepository;
+import com.ileiwe.data.repository.InstructorRepository;
 import com.ileiwe.services.instructor.InstructorService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -38,14 +39,17 @@ public class CourseServicesImpl implements CourseService{
     @Autowired
     Cloudinary cloudinary;
 
+    @Autowired
+    InstructorRepository instructorRepository;
+
     @Override
-    public Course saveCourse(CourseDto courseDto, MultipartFile courseImage) throws IOException {
+    public Course saveCourse(CourseCreateDto courseDto, MultipartFile courseImage) throws IOException {
 
         if(courseDto == null){
             throw new IllegalArgumentException("Course cannot be null");
         }
 
-        Instructor instructor = instructorService.findByUsername(courseDto.getInstructorUsername());
+        Instructor instructor = instructorRepository.findByLearningParty_Email(courseDto.getInstructorUsername());
         log.info("found instructor --> {}", instructor);
 
         Course course = new Course();
@@ -89,8 +93,8 @@ public class CourseServicesImpl implements CourseService{
     }
 
     @Override
-    public Course updateCourse(CourseDto courseUpdateDto, Long courseId) {
-        if(courseUpdateDto == null){
+    public Course updateCourse(CourseCreateDto courseDto, Long courseId) {
+        if(courseDto == null){
             throw new IllegalArgumentException("Please provide a field to update");
         }
         Course course = courseRepository.findById(courseId).orElse(null);
@@ -98,12 +102,20 @@ public class CourseServicesImpl implements CourseService{
             throw new IllegalArgumentException("Invalid course id");
         }
 
-        modelMapper.map(courseUpdateDto, course);
-        if(courseUpdateDto.isPublished()){
-            course.setPublished(true);
+        log.info("Course dto in update impl --> {}", courseDto);
+        modelMapper.map(courseDto, course);
+        if(courseDto.isPublished()){
+//            course.setPublished(true);
             course.setDatePublished(LocalDate.now());
         }
         log.info("fetched course --> {}", course);
+
+        List<String> updateImageUrls = courseDto.getImageUpdateUrls();
+        if(updateImageUrls != null){
+            for (String updateImageUrl : updateImageUrls) {
+                course.addImageUrl(updateImageUrl);
+            }
+        }
 
         List<Course> courses =  course.getInstructor().getCourses();
         for (int i = 0; i < courses.size(); i++) {
@@ -132,9 +144,10 @@ public class CourseServicesImpl implements CourseService{
     }
 
     @Override
-    public List<Course> findAll() {
+    public List<CourseDetailsDto> findAll() {
         return courseRepository.findAll().stream()
                 .filter(Course::isPublished)
+                .map(course -> modelMapper.map(course, CourseDetailsDto.class))
                 .collect(Collectors.toList());
     }
 
