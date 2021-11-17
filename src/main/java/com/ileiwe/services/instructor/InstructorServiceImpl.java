@@ -115,6 +115,7 @@ public class InstructorServiceImpl implements InstructorService{
         InstructorDetailsDto instructorDetails = new InstructorDetailsDto();
         modelMapper.map(instructor, instructorDetails);
         instructorDetails.setEnabled(instructor.getLearningParty().isEnabled());
+        instructorDetails.setUsername(instructor.getLearningParty().getEmail());
 
         return instructorDetails;
     }
