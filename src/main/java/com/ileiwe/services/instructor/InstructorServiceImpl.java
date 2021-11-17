@@ -2,10 +2,12 @@ package com.ileiwe.services.instructor;
 
 
 import com.ileiwe.data.model.*;
-import com.ileiwe.data.model.dto.CourseDto;
+import com.ileiwe.data.model.dto.CourseCreateDto;
+import com.ileiwe.data.model.dto.InstructorDetailsDto;
 import com.ileiwe.data.model.dto.InstructorPartyDto;
 import com.ileiwe.data.repository.InstructorRepository;
 import com.ileiwe.services.course.CourseService;
+import com.ileiwe.services.course.CourseServicesImpl;
 import com.ileiwe.services.mail.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ileiwe.data.model.Role.ROLE_INSTRUCTOR;
@@ -40,6 +43,7 @@ public class InstructorServiceImpl implements InstructorService{
     @Autowired
     EmailService emailService;
 
+
     @Override
     public Instructor saveInstructor(InstructorPartyDto instructorPartyDto) {
         if(instructorPartyDto == null){
@@ -62,7 +66,7 @@ public class InstructorServiceImpl implements InstructorService{
 
     @Override
     @Transactional
-    public Course createCourse(CourseDto courseDto, MultipartFile courseImage) throws IOException {
+    public Course createCourse(CourseCreateDto courseDto, MultipartFile courseImage) throws IOException {
         if(courseDto == null){
             throw new IllegalArgumentException("Course cannot be null");
         }
@@ -71,21 +75,35 @@ public class InstructorServiceImpl implements InstructorService{
     }
 
     @Override
-    public Course updateCourse(CourseDto courseUpdateDto, Long courseId, MultipartFile courseImage) {
+    public Course updateCourse(CourseCreateDto courseUpdateDto, Long courseId, MultipartFile courseImage) {
+        if(courseImage != null){
+            CourseServicesImpl courseServicesImpl = new CourseServicesImpl();
+            try {
+               Map<?,?> uploadResponse = courseServicesImpl.uploadImage(courseImage);
+                log.info("Upload response --> {}", uploadResponse);
+
+                String imageUrl = (String) uploadResponse.get("url");
+                courseUpdateDto.addImageUrl(imageUrl);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
        return courseService.updateCourse(courseUpdateDto, courseId);
     }
 
-    public Instructor findByUsername(String username){
+    @Override
+    public InstructorDetailsDto findByUsername(String username){
         if(username == null){
             throw new IllegalArgumentException("username cannot be null");
         }
-        Instructor instructor = getInstructor(username);
 
-        return instructor;
+        return getInstructor(username);
 
     }
 
-    private Instructor getInstructor(String username) {
+    private InstructorDetailsDto getInstructor(String username) {
         Instructor instructor = instructorRepository.findByLearningParty_Email(username);
         if(instructor == null){
             throw  new IllegalArgumentException("Invalid instructor id");
@@ -93,12 +111,17 @@ public class InstructorServiceImpl implements InstructorService{
         }
         if(!instructor.getLearningParty().isEnabled()){
             throw new IllegalStateException("This account is not activated.");
-        } return instructor;
+        }
+        InstructorDetailsDto instructorDetails = new InstructorDetailsDto();
+        modelMapper.map(instructor, instructorDetails);
+        instructorDetails.setEnabled(instructor.getLearningParty().isEnabled());
+
+        return instructorDetails;
     }
 
     @Override
     public void deleteCourse(String instructorUsername, Long courseId) {
-        Instructor instructor = getInstructor(instructorUsername);
+        Instructor instructor = instructorRepository.findByLearningParty_Email(instructorUsername);
 
         Course course = courseService.findById(courseId);
 
@@ -115,7 +138,8 @@ public class InstructorServiceImpl implements InstructorService{
 
     @Override
     public List<Course> getInstructorCourses(String instructorUsername) {
-        Instructor instructor = getInstructor(instructorUsername);
+        Instructor instructor = instructorRepository.findByLearningParty_Email(instructorUsername);
+
 
         return instructor.getCourses().stream()
                 .filter(Course::isPublished)
@@ -123,8 +147,8 @@ public class InstructorServiceImpl implements InstructorService{
     }
 
     @Override
-    public Instructor enableInstructor(String instructorUsername) {
-       Instructor instructor = instructorRepository.findByLearningParty_Email(instructorUsername);
+    public Instructor enableInstructor(Long instructorId) {
+       Instructor instructor = instructorRepository.findById(instructorId).orElse(null);
 
        if(instructor == null){
            throw new IllegalArgumentException("Invalid username");
@@ -133,6 +157,20 @@ public class InstructorServiceImpl implements InstructorService{
        instructor.getLearningParty().setEnabled(true);
 
        return instructorRepository.save(instructor);
+    }
+
+    @Override
+    public List<InstructorDetailsDto> getAllInstructors() {
+        return instructorRepository.findAll().stream()
+                .map(instructor -> {
+                    InstructorDetailsDto instructorDetailsDto = new InstructorDetailsDto();
+                    modelMapper.map(instructor, instructorDetailsDto);
+                    instructorDetailsDto.setEnabled(instructor.getLearningParty().isEnabled());
+
+                    return instructorDetailsDto;
+                    }
+                )
+                .collect(Collectors.toList());
     }
 
 
