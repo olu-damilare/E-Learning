@@ -5,7 +5,7 @@ import com.ileiwe.data.model.Authority;
 import com.ileiwe.data.model.Course;
 import com.ileiwe.data.model.Instructor;
 import com.ileiwe.data.model.LearningParty;
-import com.ileiwe.data.model.dto.CourseDto;
+import com.ileiwe.data.model.dto.CourseCreateDto;
 import com.ileiwe.data.repository.InstructorRepository;
 import com.ileiwe.services.instructor.InstructorService;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +63,7 @@ public class InstructorServicesImplTest {
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
 
-        CourseDto course = CourseDto.builder()
+        CourseCreateDto course = CourseCreateDto.builder()
                 .title("How to program in Java")
                 .instructorUsername(savedInstructor.getLearningParty().getEmail())
                 .description("lorem ipsum")
@@ -98,7 +98,7 @@ public class InstructorServicesImplTest {
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
 
-        CourseDto course = CourseDto.builder()
+        CourseCreateDto course = CourseCreateDto.builder()
                 .title("How to program in Java")
                 .instructorUsername(savedInstructor.getLearningParty().getEmail())
                 .description("lorem ipsum")
@@ -120,7 +120,7 @@ public class InstructorServicesImplTest {
 
         assertThat(savedCourse.getDuration()).isEqualTo(course.getDuration());
 
-        CourseDto courseUpdateDto = CourseDto.builder()
+        CourseCreateDto courseUpdateDto = CourseCreateDto.builder()
                                             .duration("4 weeks of recorded video")
                                             .build();
 
@@ -142,7 +142,7 @@ public class InstructorServicesImplTest {
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
 
-        CourseDto course = CourseDto.builder()
+        CourseCreateDto course = CourseCreateDto.builder()
                 .title("How to program in Java")
                 .instructorUsername(savedInstructor.getLearningParty().getEmail())
                 .description("lorem ipsum")
@@ -164,7 +164,7 @@ public class InstructorServicesImplTest {
 
         assertThat(savedCourse.isPublished()).isEqualTo(false);
 
-        CourseDto courseUpdateDto = CourseDto.builder()
+        CourseCreateDto courseUpdateDto = CourseCreateDto.builder()
                 .isPublished(true)
                 .build();
 
@@ -186,7 +186,7 @@ public class InstructorServicesImplTest {
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
 
-        CourseDto course = CourseDto.builder()
+        CourseCreateDto course = CourseCreateDto.builder()
                 .title("How to program in Java")
                 .instructorUsername(savedInstructor.getLearningParty().getEmail())
                 .description("lorem ipsum")
@@ -222,7 +222,7 @@ public class InstructorServicesImplTest {
         Instructor savedInstructor = instructorRepository.findById(instructor.getId()).orElse(null);
         assertThat(savedInstructor).isNotNull();
 
-        CourseDto course = CourseDto.builder()
+        CourseCreateDto course = CourseCreateDto.builder()
                 .title("How to program in Java")
                 .instructorUsername(savedInstructor.getLearningParty().getEmail())
                 .description("lorem ipsum")
@@ -230,7 +230,7 @@ public class InstructorServicesImplTest {
                 .duration("28 hours of recorded video")
                 .build();
 
-        CourseDto secondCourse = CourseDto.builder()
+        CourseCreateDto secondCourse = CourseCreateDto.builder()
                 .title("How to program in Python")
                 .instructorUsername(savedInstructor.getLearningParty().getEmail())
                 .description("lorem ipsum")
