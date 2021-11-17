@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseDto {
+public class CourseCreateDto {
 
 
     private String title;
@@ -18,4 +21,12 @@ public class CourseDto {
     private String language;
     private String instructorUsername;
     private boolean isPublished;
+    private List<String> imageUpdateUrls;
+
+    public void addImageUrl(String imageUrl){
+        if(imageUpdateUrls == null){
+            imageUpdateUrls = new ArrayList<>();
+        }
+        imageUpdateUrls.add(imageUrl);
+    }
 }
