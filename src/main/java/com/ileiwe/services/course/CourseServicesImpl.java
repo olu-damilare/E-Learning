@@ -147,7 +147,12 @@ public class CourseServicesImpl implements CourseService{
     public List<CourseDetailsDto> findAll() {
         return courseRepository.findAll().stream()
                 .filter(Course::isPublished)
-                .map(course -> modelMapper.map(course, CourseDetailsDto.class))
+                .map(course -> {
+                    CourseDetailsDto courseDetailsDto = new CourseDetailsDto();
+                      modelMapper.map(course, courseDetailsDto);
+                      courseDetailsDto.setInstructorUsername(course.getInstructor().getLearningParty().getEmail());
+                      return courseDetailsDto;
+                })
                 .collect(Collectors.toList());
     }
 
